@@ -1,0 +1,6 @@
+DEVICE_NAME = "SoundBerry"
+HTTP_PORT = 5000
+
+MQTT_BROKER = "192.168.0.100"
+MQTT_PORT = 1883
+MQTT_BASE = "soundberry"
