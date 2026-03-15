@@ -13,15 +13,22 @@ app = Flask(__name__)
 # ----------------------------
 @app.route("/play", methods=["POST"])
 def play_audio():
-    file_path = "/tmp/berryaudio"
 
-    with open(file_path, "wb") as f:
-        f.write(request.data)
+    proc = subprocess.Popen(
+        ["ffplay", "-nodisp", "-autoexit", "-"],
+        stdin=subprocess.PIPE
+    )
 
-    subprocess.run(["ffplay", "-nodisp", "-autoexit", file_path])
+    while True:
+        chunk = request.stream.read(4096)
+        if not chunk:
+            break
+        proc.stdin.write(chunk)
+
+    proc.stdin.close()
+    proc.wait()
 
     return "playing"
-
 
 # ----------------------------
 # Device description (UPnP)
