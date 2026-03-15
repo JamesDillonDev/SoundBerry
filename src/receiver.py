@@ -13,12 +13,12 @@ app = Flask(__name__)
 # ----------------------------
 @app.route("/play", methods=["POST"])
 def play_audio():
-    file_path = "/tmp/audio.wav"
+    file_path = "/tmp/berryaudio"
 
     with open(file_path, "wb") as f:
         f.write(request.data)
 
-    subprocess.run(["aplay", file_path])
+    subprocess.run(["ffplay", "-nodisp", "-autoexit", file_path])
 
     return "playing"
 
