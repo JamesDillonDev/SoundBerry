@@ -44,9 +44,25 @@ def audio_worker():
 # ----------------------------
 @app.route("/play", methods=["POST"])
 def play_audio():
-    audio_queue.put(request.stream)
-    return "queued"
 
+    proc = subprocess.Popen(
+        ["ffplay", "-nodisp", "-autoexit", "-"],
+        stdin=subprocess.PIPE
+    )
+
+    try:
+        while True:
+            chunk = request.stream.read(4096)
+            if not chunk:
+                break
+            proc.stdin.write(chunk)
+    except Exception:
+        pass
+
+    proc.stdin.close()
+    proc.wait()
+
+    return "playing"
 
 # ----------------------------
 # Stop playback
